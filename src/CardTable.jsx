@@ -8,8 +8,13 @@ class CardTable extends Component {
     this.createDeck = this.createDeck.bind(this);
     this.shuffleDeck = this.shuffleDeck.bind(this);
     this.renderCardTile = this.renderCardTile.bind(this);
+    this.flipCard = this.flipCard.bind(this);
+    this.compareCards = this.compareCards.bind(this);
 
-    this.state = { deck: [] };
+    this.state = { deck: [],
+                   cardsInPlay: [],
+                   matchedCards: []
+                 };
   }
 
   componentDidMount() {
@@ -47,12 +52,44 @@ class CardTable extends Component {
   }
 
   renderCardTile(index, card) {
-    return <CardTile index={index} rank={card.rank} suit={card.suit} />
+    const matched = this.state.matchedCards.includes(index);
+    // debugger;
+    return <CardTile index={index} rank={card.rank} suit={card.suit} clickHandler={() => this.flipCard(index)} cardsInPlay={this.state.cardsInPlay} matched={matched} />
+  }
+
+  flipCard(index) {
+    this.setState({cardsInPlay: [...this.state.cardsInPlay, index]}, () => this.compareCards())
+  }
+
+  compareCards() {
+    const { cardsInPlay, deck } = this.state;
+
+    if (cardsInPlay.length === 2) {
+      const firstFlippedCard = deck[cardsInPlay[0]];
+      const secondFlippedCard = deck[cardsInPlay[1]];
+      const red = ['hearts', 'diamonds'];
+      const black = ['spades', 'clubs']
+
+      const sameColor = (red.includes(firstFlippedCard.suit) && red.includes(secondFlippedCard.suit)) || (black.includes(firstFlippedCard.suit) && black.includes(secondFlippedCard.suit));
+
+      if ((firstFlippedCard.rank === secondFlippedCard.rank) && sameColor) {
+        // its a match!
+        this.setState({ matchedCards: [...this.state.matchedCards, cardsInPlay[0]] }, () => this.setState({ matchedCards: [...this.state.matchedCards, cardsInPlay[1]] }) );
+        this.setState({ cardsInPlay: [] });
+      } else {
+        // its not a match
+        setTimeout(() => {
+          this.setState({ cardsInPlay: [] });
+        }, 2000)
+      }
+    }
   }
 
   render() {
-    if(this.state.deck.length === 0){
-     return null;
+    const { matchedCards, deck} = this.state;
+
+    if (matchedCards.length !== 0 && (matchedCards.length === deck.length)) {
+      return <div>FINISHED</div>
     } else {
       return (
         <div className="card-table" style={{width: '80%', position: 'fixed'}}>
@@ -67,7 +104,7 @@ class CardTable extends Component {
           </ul>
         </div>
       );
-   }
+    }
   }
 
 }
