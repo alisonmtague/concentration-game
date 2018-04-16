@@ -55,10 +55,10 @@ class CardTable extends Component {
      return null;
     } else {
       return (
-        <div className="card-table">
+        <div className="card-table" style={{width: '80%', position: 'fixed'}}>
           <header>Card Table</header>
           <p>this is the table</p>
-          <ul>
+          <ul style={{listStyleType: 'none', paddingLeft: 0}}>
             {
               this.state.deck.map((card, index) => (
                 <li key={index}>{this.renderCardTile(index, card)}</li>
