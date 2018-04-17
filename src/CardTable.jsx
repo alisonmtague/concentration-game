@@ -13,7 +13,8 @@ class CardTable extends Component {
 
     this.state = { deck: [],
                    cardsInPlay: [],
-                   matchedCards: []
+                   matchedCards: [],
+                   disableClick: false
                  };
   }
 
@@ -53,8 +54,9 @@ class CardTable extends Component {
 
   renderCardTile(index, card) {
     const matched = this.state.matchedCards.includes(index);
-    // debugger;
-    return <CardTile index={index} rank={card.rank} suit={card.suit} clickHandler={() => this.flipCard(index)} cardsInPlay={this.state.cardsInPlay} matched={matched} />
+    const { disableClick } = this.state;
+
+    return <CardTile index={index} rank={card.rank} suit={card.suit} clickHandler={() => { if (!disableClick) this.flipCard(index); }} cardsInPlay={this.state.cardsInPlay} matched={matched} disbaled={true} />
   }
 
   flipCard(index) {
@@ -65,6 +67,8 @@ class CardTable extends Component {
     const { cardsInPlay, deck } = this.state;
 
     if (cardsInPlay.length === 2) {
+      this.setState({ disableClick: true });
+
       const firstFlippedCard = deck[cardsInPlay[0]];
       const secondFlippedCard = deck[cardsInPlay[1]];
       const red = ['hearts', 'diamonds'];
@@ -76,35 +80,29 @@ class CardTable extends Component {
         // its a match!
         this.setState({ matchedCards: [...this.state.matchedCards, cardsInPlay[0]] }, () => this.setState({ matchedCards: [...this.state.matchedCards, cardsInPlay[1]] }) );
         this.setState({ cardsInPlay: [] });
+        this.setState({ disableClick: false });
       } else {
         // its not a match
         setTimeout(() => {
           this.setState({ cardsInPlay: [] });
+          this.setState({ disableClick: false });
         }, 2000)
       }
     }
   }
 
   render() {
-    const { matchedCards, deck} = this.state;
-
-    if (matchedCards.length !== 0 && (matchedCards.length === deck.length)) {
-      return <div>FINISHED</div>
-    } else {
-      return (
-        <div className="card-table" style={{width: '80%', position: 'fixed'}}>
-          <header>Card Table</header>
-          <p>this is the table</p>
-          <ul style={{listStyleType: 'none', paddingLeft: 0}}>
-            {
-              this.state.deck.map((card, index) => (
-                <li key={index}>{this.renderCardTile(index, card)}</li>
-              ))
-            }
-          </ul>
-        </div>
-      );
-    }
+    return (
+      <div className="card-table">
+        <ul>
+          {
+            this.state.deck.map((card, index) => (
+              <li key={index}>{this.renderCardTile(index, card)}</li>
+            ))
+          }
+        </ul>
+      </div>
+    );
   }
 
 }
