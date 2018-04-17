@@ -4,8 +4,10 @@ class CardGameDetails extends Component {
   render() {
     return (
       <div className='game-details'>
-        <header>Game Details</header>
-        <p>these are the deets</p>
+        <header>
+          <h1>Game of Concentration</h1>
+        </header>
+        <p className="card-details-subheader">Match a card with its same rank and color!</p>
       </div>
     );
   }

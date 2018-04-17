@@ -1,0 +1,29 @@
+.game-details {
+  width: 80%;
+  margin: 0px 200px 0px 200px;
+}
+
+.card-details-subheader {
+  font-size: 30px;
+}
+
+.card-table {
+  width: 100%;
+  position: fixed;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+  margin: 0px 200px 0px 200px;
+}
+
+.card-tile {
+  border: 2px solid black;
+  border-radius: 5px;
+  width: 145px;
+  height: 203px;
+  display: inline-block;
+  float: left;
+  margin: 3px;
+}
